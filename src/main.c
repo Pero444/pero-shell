@@ -1,32 +1,30 @@
 #include <stdio.h>
 #include <unistd.h>
-//#include <shell.h>
-//#include <input.h>
+#include <string.h>
+#include <stdlib.h>
 
-void printPrompt() {
-    printf("\n<-/");
-}
-
-void printTitle() {
-    printf("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-    printf("\n~~~~~                pero-shell               ~~~~~");
-    printf("\n~~~~~~~~~~~~~     Use with caution    ~~~~~~~~~~~~~");
-    printf("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-}
+#include "shell.h"
+#include "input.h"
+#include "executor.h"
+#include "lexer.h"
+#include "builtins.h"
 
 int main(int argc, char* argv[]) {
 
+    //load configs??
+    Config CONFIG;
+    if(setConfig(&CONFIG)) {
+        printf("\nconfig not setup\n");
+    }
+
+    //changeDirectory(homePath);
+    //warnings
     printTitle();
-    printPrompt();
-
-    char cwd[1024];
     
-    while(1) {
-        if(getcwd(cwd, sizeof(cwd)) != NULL) {
-        printf("%s\n", cwd);
-    }
+    //loop time
 
-    }
-    
+    peroLoop(&CONFIG);
+    printf("\nClosing shell...\n");
+    // cleanup
     return 0;
 }
