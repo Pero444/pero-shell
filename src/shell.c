@@ -15,7 +15,7 @@ int setConfig(config _Config) {
     _Config->username = getenv("USER");
     _Config->hostname = getenv("HOSTNAME");
 
-    changeDirectory(_Config->homepath);
+    chdir(_Config->homepath);
     return 0;
 }
 
@@ -31,7 +31,7 @@ void printPrompt(config _Config) {
     printf(":");
     printf("\033[0;31m");
     printCWD();
-    printf(" (•`_´•) ");
+    printf(" <-_-> ");
     printf("\033[0m");
 }
 
@@ -43,29 +43,42 @@ void printTitle() {
 }
 
 void peroLoop(config _Config) {
-    char line[1024];
-    int lineSize = sizeof(line);
+    char* line;
+    // int lineSize = sizeof(line);
 
     while (1) {
         printPrompt(_Config);
 
-        if (readInput(line, lineSize)) {
-            printf("Error while reading input.");
+        line = takeInput();
+        if (line == NULL) {
+            continue;
         }
+        
 
         // lexer - tokenizacija
         char** tokens = tokenize(line);
 
-        for (int k = 0; tokens[k] != NULL; k++) {
-            printf("%s ", tokens[k]);
+        int idx = isBuiltIn(tokens[0]);
+        if (idx >= 0) {
+            runBuiltIn(tokens, idx);
+        } else {
+            printf("\nNot a built in command, trying to search...");
         }
 
-        // ast parser tj. piping
 
-        if (strcmp(tokens[0], "exit") == 0)
-            break;
+
         // executor
 
+
+
         // free all
+        // free tokens
+        freeTokens(tokens);
+        tokens = NULL;
+        
+                
     }
+    freeInput(line);
+    line = NULL;
+
 }

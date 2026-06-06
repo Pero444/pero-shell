@@ -4,4 +4,6 @@
 int countTokens(char*);
 char** tokenize(char*);
 
+void freeTokens(char**);
+
 #endif // LEXER_H_

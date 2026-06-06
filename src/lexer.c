@@ -49,3 +49,12 @@ char** tokenize(char* line) {
 
     return tokens;
 }
+
+void freeTokens(char** tokens) {
+    if (tokens == NULL) return;
+
+    for (int i = 0; tokens[i] != NULL; i++) {
+        free(tokens[i]);
+    }
+    free(tokens);
+}
