@@ -13,6 +13,4 @@
 
 char* takeInput();
 
-void freeInput(char*);
-
 #endif // INPUT_H_

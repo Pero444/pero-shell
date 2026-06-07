@@ -6,6 +6,11 @@
 #include <string.h>
 #include <unistd.h>
 
+// GNU readline
+#include <readline/history.h>
+#include <readline/readline.h>
+//
+
 #include "builtins.h"
 #include "input.h"
 #include "lexer.h"
@@ -24,15 +29,29 @@ void printCWD() {
     if (getcwd(cwd, sizeof(cwd)) != NULL) printf("%s", cwd);
 }
 
-void printPrompt(config _Config) {
-    printf("\033[0;31m");
-    printf("\n%s@%s", _Config->username, _Config->hostname);
-    printf("\033[0m");
-    printf(":");
-    printf("\033[0;31m");
-    printCWD();
-    printf(" <-_-> ");
-    printf("\033[0m");
+// promjeni ovaj dio
+char* prompt(config _Config) {
+    char highlightColor[] = "\001\033[0;31m\002";
+    char defaultColor[] = "\001\033[0m\002";
+    char start[] = " (•`_´•) ";
+    char userHostSep[] = ":";
+
+    char* homepath = getenv("HOME");
+    char* username = getenv("USER");
+    char* hostname = getenv("HOSTNAME");
+
+    char cwd[1024];
+    getcwd(cwd, sizeof(cwd));
+
+    int size = strlen(highlightColor) + strlen(defaultColor) + strlen(start) +
+               strlen(userHostSep) + strlen(homepath) + strlen(username) +
+               strlen(hostname) + strlen(cwd) + 1;
+
+    char* prompt = (char*)malloc(size * sizeof(char));
+    snprintf(prompt, size, "%s %s@%s%s%s%s %s", highlightColor, username,
+             hostname, userHostSep, cwd, start, defaultColor);
+
+    return prompt;
 }
 
 void printTitle() {
@@ -44,41 +63,48 @@ void printTitle() {
 
 void peroLoop(config _Config) {
     char* line;
-    // int lineSize = sizeof(line);
 
     while (1) {
-        printPrompt(_Config);
-
         line = takeInput();
+
         if (line == NULL) {
+            printf("exit\n");
+            break;
+        }
+
+        if (line[0] == '\0') {
+            free(line);
             continue;
         }
+
+
+        // // lexer - input line ---> tokens
+        Token* tokens = lexer(line);
+
         
 
-        // lexer - tokenizacija
-        char** tokens = tokenize(line);
+        // ast parser  tokens --->  ast node structure
 
-        int idx = isBuiltIn(tokens[0]);
+        // executor 
+        /*
+        int idx = isBuiltIn(tokens[0].value);
         if (idx >= 0) {
-            runBuiltIn(tokens, idx);
+            runBuiltIn(tokens[0].value, idx);
         } else {
             printf("\nNot a built in command, trying to search...");
         }
+        */
 
 
+        // free line, tokens, ast nodes
+        free(line);
+        line = NULL;
 
-        // executor
-
-
-
-        // free all
-        // free tokens
-        freeTokens(tokens);
+        free(tokens);
         tokens = NULL;
-        
-                
-    }
-    freeInput(line);
-    line = NULL;
 
+        
+        //free();
+        //ast = NULL
+    }
 }

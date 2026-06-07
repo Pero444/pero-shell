@@ -3,22 +3,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <readline/history.h>
+#include <readline/readline.h>
 
 /*
-char* takeInput(int size) {
-    char* line = (char*)malloc(size * sizeof(char));
-
-    if (fgets(line, size, stdin) == NULL) {
-        printf("\nUnable to read input.");
-    }
-
-    if (strlen(line) <= 0) return NULL;
-
-    line[strlen(line) - 1] = '\0';
-    return line;
-}
-*/
-
 char* takeInput() {
     char* line = NULL;
 
@@ -40,5 +28,16 @@ char* takeInput() {
 
     return line;
 }
+*/
 
-void freeInput(char* line) { free(line); }
+char* takeInput() {
+    char* line = readline("\001\033[0;31m\002prompt:~ # \001\033[0m\002$ ");
+    
+    // ctrl + d aka eof + empty string = exit returns NULL
+    if(line == NULL) return NULL;
+
+    // if not empty add to history
+    if (line[0] != '\0') add_history(line);
+
+    return line;
+}
