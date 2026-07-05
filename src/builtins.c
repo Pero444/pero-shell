@@ -3,6 +3,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "lexer.h"
+
 typedef struct {
     char* name;
     int (*func)(char** argv);
@@ -17,11 +19,14 @@ int builtin_exit(char** argv) {
     exit(EXIT_SUCCESS);
 }
 int builtin_export(char** argv) { printf("\nexport"); }
+
 int builtin_unset(char** argv) { printf("\nunset"); }
+
 int builtin_echo(char** argv) { 
     printf("\n%s", argv[1]);   
  }
-int builtin_env(char** argv) { printf("\nenv"); }
+
+ int builtin_env(char** argv) { printf("\nenv"); }
 
 static Builtin builtins[] = {
     {"cd", builtin_cd},
@@ -34,15 +39,16 @@ static Builtin builtins[] = {
 };
 
 
-
-
-int isBuiltIn(char* cmd) {
+//
+int isBuiltIn(Token* cmd) {
     for (int i = 0; builtins[i].name; i++){
-        if(strcmp(cmd, builtins[i].name) == 0) return i;
+        if(strcmp(cmd->value, builtins[i].name) == 0)
+            return i;
+
     }
     return -1; // if not builtin
 }
 
-int runBuiltIn(char** argv, int i) {
-    builtins[i].func(argv);
+int runBuiltIn(char** argv, int idx) {
+    builtins[idx].func(argv);
 }

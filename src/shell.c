@@ -81,19 +81,20 @@ void peroLoop(config _Config) {
         // // lexer - input line ---> tokens
         Token* tokens = lexer(line);
 
-        
-
         // ast parser  tokens --->  ast node structure
 
         // executor 
-        /*
-        int idx = isBuiltIn(tokens[0].value);
-        if (idx >= 0) {
-            runBuiltIn(tokens[0].value, idx);
-        } else {
-            printf("\nNot a built in command, trying to search...");
-        }
-        */
+        
+        int idx = isBuiltIn(&tokens[0]);
+        char** names;
+        runBuiltIn(names, idx);
+        // if (idx >= 0) {
+        //     runBuiltIn(tokens[0].value, idx);
+        // } else {
+        //     printf("\nNot a built in command, trying to search...");
+        // }
+        
+        
 
 
         // free line, tokens, ast nodes

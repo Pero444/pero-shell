@@ -1,5 +1,8 @@
 #ifndef BUILTINS_H_
 #define BUILTINS_H_
+
+#include<lexer.h>
+
 /*
     cd
     exit
@@ -17,7 +20,7 @@
 */
 typedef struct Builtin;
 
-int isBuiltIn(char*);
+int isBuiltIn(Token*);
 int runBuiltIn(char** , int);
 
 
