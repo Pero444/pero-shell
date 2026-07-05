@@ -1,18 +1,16 @@
 #ifndef INPUT_H_
 #define INPUT_H_
 
-typedef struct {
-    char *input;
-    int size;
-    //bool isValid;
+// typedef struct {
+//     char *input;
+//     int size;
+//     //bool isValid;
 
-} InputBuffer;
-
+// } InputBuffer;
 
 //InputBuffer createInputBuffer();
 
-void formatInput(char*);
-int readInput(char*, int);
 
+char* takeInput();
 
 #endif // INPUT_H_

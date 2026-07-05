@@ -17,14 +17,12 @@ int main(int argc, char* argv[]) {
         printf("\nconfig not setup\n");
     }
 
-    //changeDirectory(homePath);
-    //warnings
     printTitle();
     
     //loop time
-
     peroLoop(&CONFIG);
-    printf("\nClosing shell...\n");
+    
+    
     // cleanup
     return 0;
 }

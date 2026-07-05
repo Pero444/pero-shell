@@ -6,6 +6,11 @@
 #include <string.h>
 #include <unistd.h>
 
+// GNU readline
+#include <readline/history.h>
+#include <readline/readline.h>
+//
+
 #include "builtins.h"
 #include "input.h"
 #include "lexer.h"
@@ -15,7 +20,7 @@ int setConfig(config _Config) {
     _Config->username = getenv("USER");
     _Config->hostname = getenv("HOSTNAME");
 
-    changeDirectory(_Config->homepath);
+    chdir(_Config->homepath);
     return 0;
 }
 
@@ -24,15 +29,29 @@ void printCWD() {
     if (getcwd(cwd, sizeof(cwd)) != NULL) printf("%s", cwd);
 }
 
-void printPrompt(config _Config) {
-    printf("\033[0;31m");
-    printf("\n%s@%s", _Config->username, _Config->hostname);
-    printf("\033[0m");
-    printf(":");
-    printf("\033[0;31m");
-    printCWD();
-    printf(" (•`_´•) ");
-    printf("\033[0m");
+// promjeni ovaj dio
+char* prompt(config _Config) {
+    char highlightColor[] = "\001\033[0;31m\002";
+    char defaultColor[] = "\001\033[0m\002";
+    char start[] = " (•`_´•) ";
+    char userHostSep[] = ":";
+
+    char* homepath = getenv("HOME");
+    char* username = getenv("USER");
+    char* hostname = getenv("HOSTNAME");
+
+    char cwd[1024];
+    getcwd(cwd, sizeof(cwd));
+
+    int size = strlen(highlightColor) + strlen(defaultColor) + strlen(start) +
+               strlen(userHostSep) + strlen(homepath) + strlen(username) +
+               strlen(hostname) + strlen(cwd) + 1;
+
+    char* prompt = (char*)malloc(size * sizeof(char));
+    snprintf(prompt, size, "%s %s@%s%s%s%s %s", highlightColor, username,
+             hostname, userHostSep, cwd, start, defaultColor);
+
+    return prompt;
 }
 
 void printTitle() {
@@ -43,29 +62,50 @@ void printTitle() {
 }
 
 void peroLoop(config _Config) {
-    char line[1024];
-    int lineSize = sizeof(line);
+    char* line;
 
     while (1) {
-        printPrompt(_Config);
+        line = takeInput();
 
-        if (readInput(line, lineSize)) {
-            printf("Error while reading input.");
-        }
-
-        // lexer - tokenizacija
-        char** tokens = tokenize(line);
-
-        for (int k = 0; tokens[k] != NULL; k++) {
-            printf("%s ", tokens[k]);
-        }
-
-        // ast parser tj. piping
-
-        if (strcmp(tokens[0], "exit") == 0)
+        if (line == NULL) {
+            printf("exit\n");
             break;
-        // executor
+        }
 
-        // free all
+        if (line[0] == '\0') {
+            free(line);
+            continue;
+        }
+
+
+        // // lexer - input line ---> tokens
+        Token* tokens = lexer(line);
+
+        // ast parser  tokens --->  ast node structure
+
+        // executor 
+        
+        int idx = isBuiltIn(&tokens[0]);
+        char** names;
+        runBuiltIn(names, idx);
+        // if (idx >= 0) {
+        //     runBuiltIn(tokens[0].value, idx);
+        // } else {
+        //     printf("\nNot a built in command, trying to search...");
+        // }
+        
+        
+
+
+        // free line, tokens, ast nodes
+        free(line);
+        line = NULL;
+
+        free(tokens);
+        tokens = NULL;
+
+        
+        //free();
+        //ast = NULL
     }
 }

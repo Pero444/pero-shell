@@ -14,7 +14,8 @@ int setConfig(config);
 
 void peroLoop(config);
 
-void printPrompt(config);
+char* prompt(config);
+
 void printTitle();
 void printCWD();
 
