@@ -4,10 +4,6 @@
 #include <stdlib.h>
 
 #include "shell.h"
-#include "input.h"
-#include "executor.h"
-#include "lexer.h"
-#include "builtins.h"
 
 int main(int argc, char* argv[]) {
 
@@ -22,7 +18,5 @@ int main(int argc, char* argv[]) {
     //loop time
     peroLoop(&CONFIG);
     
-    
-    // cleanup
     return 0;
 }
