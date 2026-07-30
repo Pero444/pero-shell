@@ -1,16 +1,14 @@
 #ifndef INPUT_H_
 #define INPUT_H_
 
-// typedef struct {
-//     char *input;
-//     int size;
-//     //bool isValid;
+typedef enum {
+    DEFAULT_PROMPT,
+    INCOMPLETE_PROMPT
 
-// } InputBuffer;
+} Prompt;
 
-//InputBuffer createInputBuffer();
+//const char* promptTexts[];
 
-
-char* takeInput();
+char* takeInput(Prompt prompt);
 
 #endif // INPUT_H_

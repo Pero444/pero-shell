@@ -12,7 +12,7 @@ typedef Config* config;
 int setConfig(config);
 
 
-void peroLoop(config);
+int peroLoop(config);
 
 char* prompt(config);
 
