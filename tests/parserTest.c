@@ -174,10 +174,6 @@ int main(void) {
     //RUN_TEST(test_repeated_redirect_type_preserves_order);
 
 
-
-
-
-
         /* "ls -la"  -> normal, complete command */
     Token t1[] = { mk(TOK_WORD, "ls"), mk(TOK_WORD, "-la"), mk(TOK_EOF, NULL) };
     run_case("ls -la", t1, PARSE_OK);

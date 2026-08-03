@@ -1,10 +1,10 @@
-#include "lexer.h"
-
 #include <ctype.h>
 #include <malloc.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
+
+#include "lexer.h"
 
 /**
  * @brief determines the number of words in a input string
@@ -66,6 +66,11 @@ Token* lexer(char* line) {
     return tokens;
 }
 
+
+/**
+ * @brief frees up the memory allocated for tokens
+ * @param tokens tokens to be freed
+ */
 void freeTokens(Token* tokens) {
     int i = 0;
     while(tokens[i].type != TOK_EOF) {
@@ -135,28 +140,15 @@ const char* getTypeString(TokenType type) {
 
 /**
  * @brief token that prints all the tokens
+ * @param tokens tokens to be printed to terminal
  */
 void printTokens(Token* tokens) {
     int i = 0;
-    int firstLine = 0;
-    int lastLine = 0;
     
-    printf("\nTOKENS:");
-    while (tokens[i].value != NULL) {
-        if(i == 0) {
-            // first token
-            printf("\n┏━ %s\t%s", tokens[i].value, getTypeString(tokens[i].type));
-        } 
-        else if(tokens[i + 1].value == NULL) {
-            // last token
-            printf("\n┗━ %s\t%s", tokens[i].value, getTypeString(tokens[i].type));
-
-        }
-        else {
-            printf("\n┣━ %s\t%s", tokens[i].value, getTypeString(tokens[i].type));
-
-        }
+    printf("\n--------------TOKENS------------\n");
+    while (tokens[i].value != NULL) {  
+        printf("\n\e[1m%d.\e[m - %s\t - %s", i, tokens[i].value, getTypeString(tokens[i].type));
         i++;
     }
-    printf("\n");    
+    printf("\n---------------------------------\n");  
 }
