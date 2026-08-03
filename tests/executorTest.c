@@ -5,8 +5,6 @@
 
 #include "executor.h"
 
-//extern int executePipeline(Pipeline* pipeline);
-
 static Token mk(TokenType type, const char* value) {
     Token t; t.type = type; t.value = value ? strdup(value) : NULL; return t;
 }
@@ -91,7 +89,7 @@ int main(void) {
     Token t8[] = { mk(TOK_WORD, "this_command_does_not_exist_xyz"), mk(TOK_EOF, NULL) };
     run("this_command_does_not_exist_xyz  (expect: error + exit 127)", t8);
 
-    // pwd | grep home - testing if shell can pipe builtin commands
+    // 9. pwd | grep home - testing if shell can pipe builtin commands
     Token t9[] = { 
         mk(TOK_WORD, "pwd"),
         mk(TOK_PIPE, "|"),

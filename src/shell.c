@@ -1,17 +1,10 @@
-#include "shell.h"
-
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
-// GNU readline
-#include <readline/history.h>
-#include <readline/readline.h>
-//
-
-#include "builtins.h"
+#include "shell.h"
 #include "input.h"
 #include "lexer.h"
 #include "parser.h"
@@ -30,13 +23,12 @@ void printTitle() {
 /**
  * @brief main loop that runs the whole shell, REPL loop that does everything u
  * sequence input reading, tokenzation, tree parsing, and execution, memory
- * allocation and dealocation
+ * allocation and dealocation.
  * @param _Config that will hold said values
  */
 int peroLoop() {
     char* line;
 
-    
     while (1) {
         line = takeInput(DEFAULT_PROMPT);
 
@@ -97,21 +89,18 @@ int peroLoop() {
             continue;
         }
 
-        // execute pipeline
-
         // printPipeline(pipeline);
-        // printf("\n---------------------------------\n");
 
         // executor - pipeline ---> command execution
         execute(pipeline);
+        freePipeline(pipeline);
+        pipeline = NULL;
 
         
-        // free line, tokens, pipeline
+        // free line
         free(line);
         line = NULL;
 
-        freePipeline(pipeline);
-        pipeline = NULL;
     }
 
     shutdown:

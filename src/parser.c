@@ -1,18 +1,18 @@
 #include "parser.h"
 
 /**
- * @brief fetches the token currently stored in parser
+ * @brief Fetches the token currently stored in parser.
  * @param p parser
- * @return returns current token from parser
+ * @return Returns current token from parser.
  */
 static Token* peek(Parser* p) { 
     return &p->tokens[p->pos]; 
 }
 
 /**
- * @brief returns the current token and moves to the next token in array
+ * @brief Returns the current token and moves to the next token in array.
  * @param p parser
- * @return returns pointer to last token in array after advancing
+ * @return Returns pointer to last token in array after advancing.
  */
 static Token* advance(Parser* p) {
     Token* current = &p->tokens[p->pos];
@@ -22,21 +22,31 @@ static Token* advance(Parser* p) {
 }
 
 /**
- * @brief checks if parsers current token type and var type match
+ * @brief Checks if parsers current token type and var type match.
  * @param parser parser that holds the current token
  * @param type variable we compare againts
- * @return returns 1 if values match otherwise 0
+ * @return Returns 1 if values match otherwise 0.
  */
 static int check(Parser* p, TokenType type) { 
     return peek(p)->type == type; 
 }
 
-/* forward declaration: defined near the bottom of the file, but used by
- * parsePipeline() above it */
-static Pipeline* createPipeline();
+/**
+ * @brief Allocates a new Pipeline and initializes it to default/empty
+ *        values (0 commands, starting capacity of 4, background off).
+ * @return Returns pointer to the newly allocated Pipeline;
+ */
+static Pipeline* createPipeline() {
+    Pipeline* temp = malloc(sizeof(Pipeline));
+    temp->count = 0;
+    temp->capacity = 4;
+    temp->commands = malloc(sizeof(SimpleCommand) * temp->capacity);
+    temp->background = 0;
+    return temp;
+}
 
 /**
- * @brief Iniitializes a simple command to default values
+ * @brief Iniitializes a simple command to default values.
  * @param cmd simple command to be initialized
  */
 static void simpleCommandInit(SimpleCommand* cmd) {
@@ -49,9 +59,9 @@ static void simpleCommandInit(SimpleCommand* cmd) {
 }
 
 /**
- * @brief Add argument to the simple command
+ * @brief Add argument to the simple command.
  * @param cmd simple command 
- * @param wod argument to be added
+ * @param word argument to be added.
  */
 static void simple_command_add_arg(SimpleCommand* cmd, const char* word) {
     if (cmd->argc + 1 >= cmd->argv_capacity) {
@@ -64,10 +74,10 @@ static void simple_command_add_arg(SimpleCommand* cmd, const char* word) {
 }
 
 /**
- * @brief Add redirection to simple command
+ * @brief Add redirection to simple command.
  * @param cmd simple command 
  * @param type type of redirection
- * @param filename redirection filename argument 
+ * @param filename redirection filename argument .
  */
 static void simpleCommandAddRedirection(SimpleCommand* cmd, RedirType type,
                                         const char* filename) {
@@ -125,7 +135,11 @@ static int parseRedirection(Parser* p, SimpleCommand* cmd) {
     return 1;
 }
 
-//
+/**
+ * @brief Check whether the token holds is a redirection operator.
+ * @param p parser that holds the tokens
+ * @return Returns 1 if true else 0.
+ */
 
 static int isRedirectionOperator(Parser* p) {
     return check(p, TOK_REDIR_APPEND) || 
@@ -139,7 +153,7 @@ static int isRedirectionOperator(Parser* p) {
  *        redirection)+). Exits with a syntax error if no WORD or redirection
  *        is found at all, since a simple_command requires at least one.
  * @param p parser
- * @return the fully built SimpleCommand, returned by value
+ * @return Returns the fully built SimpleCommand, returned by value.
  */
 static SimpleCommand parseSimpleCommand(Parser* p) {
     SimpleCommand cmd;
@@ -231,26 +245,10 @@ static Pipeline* parsePipeline(Parser* p) {
     return pipeline;
 }
 
-
-/**
- * @brief Allocates a new Pipeline and initializes it to default/empty
- *        values (0 commands, starting capacity of 4, background off).
- * @return pointer to the newly allocated Pipeline; caller owns this memory
- *         and must eventually free it (e.g. via freePipeline)
- */
-static Pipeline* createPipeline() {
-    Pipeline* temp = malloc(sizeof(Pipeline));
-    temp->count = 0;
-    temp->capacity = 4;
-    temp->commands = malloc(sizeof(SimpleCommand) * temp->capacity);
-    temp->background = 0;
-    return temp;
-}
-
 /**
  * @brief Returns the printable symbol for a redirection type.
  * @param type redirection type
- * @return "<" , ">" , ">>" , or "?" if the type is unrecognized
+ * @return Returns "<" , ">" , ">>" , or "?" if the type is unrecognized.
  */
 static const char* redirSymbol(RedirType type) {
     switch (type) {

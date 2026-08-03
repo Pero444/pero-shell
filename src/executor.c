@@ -1,5 +1,3 @@
-#include "executor.h"
-
 #include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -9,11 +7,12 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include "executor.h"
 #include "builtins.h"
 
 /**
- * @brief
- * @param
+ * @brief Applies all redirections in order to command
+ * @param cmd command to which to apply redirection
  */
 static void applyRedirection(SimpleCommand* cmd) {
     Redirect* r = cmd->redirects;
@@ -53,9 +52,9 @@ static void applyRedirection(SimpleCommand* cmd) {
 }
 
 /**
- * @brief
- * @param
- * @return
+ * @brief Executes the pipeline inside exec
+ * @param exec executor struct that holds the pipeline
+ * @return Returns 1 on failure, otherwise 0
  */
 static int executePipeline(Executor* exec) {
     int n = exec->count;
@@ -162,9 +161,9 @@ static int executePipeline(Executor* exec) {
 }
 
 /**
- * @brief executes the pipeline
- * @param
- * @return
+ * @brief executes the pipeline 
+ * @param p input pipeline to be executed
+ * @return Returns 1 on failure otherwise 0
  */
 int execute(Pipeline* p) {
     Executor exec = {p, 0, 0};

@@ -10,7 +10,7 @@
 #include "input.h"
 
 /**
- * @brief
+ * @brief Prompt table to be used. The prompt is fetched using prompt type enum.
  */
 const char* promptTexts[] = {
     "đe je pero",
@@ -18,8 +18,8 @@ const char* promptTexts[] = {
 };
 
 /**
- * @brief builds the prompt string
- * @return returns the prompt
+ * @brief Function that builds the prompt.
+ * @return Returns the prompt.
  */
 char* getPrompt() {
     char highlightColor[] = "\001\033[0;31m\002";
@@ -59,9 +59,9 @@ char* getPrompt() {
 }
 
 /**
- * @brief
- * @param
- * @return
+ * @brief Function that reads the input from user and prints the prompt to terminal.
+ * @param prompt type of prompt to use
+ * @return Returns user input.
  */
 char* takeInput(Prompt prompt) {
     char* line = readline((prompt == DEFAULT_PROMPT)? getPrompt(): promptTexts[prompt]);

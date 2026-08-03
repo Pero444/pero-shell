@@ -7,9 +7,9 @@
 #include "lexer.h"
 
 /**
- * @brief determines the number of words in a input string
+ * @brief Determines the number of words in a input string.
  * @param line input string that holds all the tokens
- * @return returns the number of words in string
+ * @return Returns the number of words in string.
  */
 int count(char* line) {
     int count = 0;
@@ -31,9 +31,9 @@ int count(char* line) {
 }
 
 /**
- * @brief divides the input string into smaller chunks called tokens
+ * @brief Divides the input string into smaller chunks called tokens.
  * @param line input strings that holds all the tokens
- * @return returns pointer to an array of tokens the function creates
+ * @return Returns pointer to an array of tokens the function creates.
  */
 Token* lexer(char* line) {
     char* temp = strdup(line);
@@ -60,7 +60,6 @@ Token* lexer(char* line) {
     tokens[i].value = NULL;
     tokens[i].type = TOK_EOF;
 
-    // free memory
     free(temp);
 
     return tokens;
@@ -68,7 +67,7 @@ Token* lexer(char* line) {
 
 
 /**
- * @brief frees up the memory allocated for tokens
+ * @brief Frees up the memory allocated for tokens.
  * @param tokens tokens to be freed
  */
 void freeTokens(Token* tokens) {
@@ -82,9 +81,9 @@ void freeTokens(Token* tokens) {
 }
 
 /**
- * @brief determines the type of token
+ * @brief Determines the type of token.
  * @param token pointer to a token to check
- * @return returns enum tokenType
+ * @return Returns enum tokenType.
  */
 TokenType isType(char* token) {
     if (strcmp(token, "|") == 0) {
@@ -112,10 +111,10 @@ TokenType isType(char* token) {
 }
 
 /**
- * @brief lookup table for token types
- * for debugging purposes
+ * @brief Lookup table for token types
+ * for debugging purposes.
  * @param type token type 
- * @return returns string matching token type
+ * @return Returns string matching token type.
  */
 const char* getTypeString(TokenType type) {
     static const char* types[] = {
@@ -139,7 +138,7 @@ const char* getTypeString(TokenType type) {
 }
 
 /**
- * @brief token that prints all the tokens
+ * @brief Token that prints all the tokens.
  * @param tokens tokens to be printed to terminal
  */
 void printTokens(Token* tokens) {
