@@ -44,7 +44,7 @@ int peroLoop() {
 
         // lexer - input line ---> tokens
         Token* tokens = lexer(line);
-        //printTokens(tokens);
+        printTokens(tokens);
         
         // parser - token ---> parsed tree
         Pipeline* pipeline = parse(tokens);
@@ -89,7 +89,7 @@ int peroLoop() {
             continue;
         }
 
-        // printPipeline(pipeline);
+        printPipeline(pipeline);
 
         // executor - pipeline ---> command execution
         execute(pipeline);
