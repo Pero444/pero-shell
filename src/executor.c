@@ -11,7 +11,6 @@
 
 #include "builtins.h"
 
-
 /**
  * @brief
  * @param
@@ -62,10 +61,26 @@ static int executePipeline(Executor* exec) {
     int n = exec->count;
     SimpleCommand* cmds = exec->pipeline->commands;
 
+    // single command
     int builtinIdx = isBuiltIn(cmds[0].argv[0]);
     if (n == 1 && builtinIdx != -1) {
-        runBuiltIn(cmds[0].argv, builtinIdx);
-        //printf("Running builtin command: %s\n", cmds[0].argv[0]);
+        SimpleCommand* cmd = &cmds[0];
+
+        int saved_stdout = -1, saved_stdin = -1;
+        if (cmd->redirects) {
+            saved_stdout = dup(STDOUT_FILENO);
+            saved_stdin = dup(STDOUT_FILENO);
+            applyRedirection(cmd);
+        }
+
+        runBuiltIn(&cmd->argv[0], builtinIdx);
+
+        if (cmd->redirects) {
+            dup2(saved_stdout, STDOUT_FILENO);
+            dup2(saved_stdin, STDIN_FILENO);
+            close(saved_stdout);
+            close(saved_stdin);
+        }
         return 0;
     }
 
@@ -80,6 +95,8 @@ static int executePipeline(Executor* exec) {
     pid_t pids[n];
 
     for (int i = 0; i < n; i++) {
+        fflush(NULL);
+
         pid_t pid = fork();
 
         if (pid < 0) {
@@ -108,12 +125,15 @@ static int executePipeline(Executor* exec) {
             builtinIdx = isBuiltIn(cmds[i].argv[0]);
             if (builtinIdx != -1) {
                 runBuiltIn(&cmds[i].argv[0], builtinIdx);
-                return 0;
+                fflush(stdout);
+                _exit(0);
             }
+
             execvp(cmds[i].argv[0], cmds[i].argv);
 
             /* execvp only returns on failure */
-            fprintf(stderr, "pero: %s: %s\n", cmds[i].argv[0], strerror(errno));
+            fprintf(stderr, "pero: %s: %s\n", cmds[i].argv[0],
+                    "command not found...");
 
             _exit(127);
         }
@@ -141,9 +161,8 @@ static int executePipeline(Executor* exec) {
     return WIFEXITED(status) ? WEXITSTATUS(status) : 1;
 }
 
-
 /**
- * @brief executes the pipeline 
+ * @brief executes the pipeline
  * @param
  * @return
  */

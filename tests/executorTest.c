@@ -91,6 +91,19 @@ int main(void) {
     Token t8[] = { mk(TOK_WORD, "this_command_does_not_exist_xyz"), mk(TOK_EOF, NULL) };
     run("this_command_does_not_exist_xyz  (expect: error + exit 127)", t8);
 
+    // pwd | grep home - testing if shell can pipe builtin commands
+    Token t9[] = { 
+        mk(TOK_WORD, "pwd"),
+        mk(TOK_PIPE, "|"),
+        mk(TOK_WORD, "grep"),
+        mk(TOK_WORD, "home"),
+        mk(TOK_EOF, NULL)
+    };
+
+    char cwd[1024];
+    getcwd(cwd, 1024);
+    run(cwd, t9);
+
     sleep(2); /* let the background sleep finish before the program exits */
     return 0;
 }
